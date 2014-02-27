@@ -1,0 +1,8 @@
+============
+PythonicGrib
+============
+
+PythonicGrib is a Python wrapper for the ECMWF's GRIB API which allows
+interaction with GRIB messagese in a pythonic way.
+
+Author: `Daniel Lee <Lee.Daniel.1986@gmail.com>`_
