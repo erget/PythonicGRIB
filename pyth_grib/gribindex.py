@@ -8,6 +8,8 @@ Author: Daniel Lee, DWD, 2014
 
 import gribapi
 
+from .gribmessage import GribMessage
+
 class GribIndex(object):
     """
     A GRIB index meant for use in a context manager.
@@ -26,11 +28,15 @@ class GribIndex(object):
         ...     idx.size(key)
         ...     # Report unique values indexed by key
         ...     idx.values(key)
+        ...     # Request GribMessage matching key, value
+        ...     msg = idx.select(key, value)
     """
     def __enter__(self):
         return self
     def __exit__(self, type, value, traceback):
         """Release GRIB message handle and inform file of release."""
+        while self.open_messages:
+            self.open_messages[0].close()
         gribapi.grib_index_release(self.iid)
     def close(self):
         """Possibility to manually close index."""
@@ -63,6 +69,8 @@ class GribIndex(object):
                                "(possibilities: grib_file, clone, sample).")
         #: Indexed keys. Only available if GRIB is initialized from file.
         self.keys = keys
+        #: Open GRIB messages
+        self.open_messages = []
     def size(self, key):
         """Return number of distinct values for index key."""
         return gribapi.grib_index_get_size(self.iid, key)
@@ -75,3 +83,7 @@ class GribIndex(object):
     def write(self, outfile):
         """Write index to filename at ``outfile``."""
         gribapi.grib_index_write(self.iid, outfile)
+    def select(self, key, value):
+        """Return message associated with given key value pair."""
+        gribapi.grib_index_select(self.iid, key, value)
+        return GribMessage(index=self)

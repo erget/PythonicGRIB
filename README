@@ -3,7 +3,9 @@ PythonicGrib
 ============
 
 PythonicGrib is a Python wrapper for the ECMWF's GRIB API which allows
-interaction with GRIB messagese in a pythonic way.
+interaction with GRIB messagese in a pythonic way and allows the user to be
+sure their code is free of memory leaks by transfering bookkeeping tasks to a
+context manager.
 
 Working with GRIB files in a context manager like this::
 
@@ -63,6 +65,10 @@ Let indexes worry about taking care of themselves::
     ...     idx.size(key)
     ...     # Report unique values indexed by key
     ...     idx.values(key)
+    ...     # Request GribMessage matching key, value
+    ...     msg = idx.select(key, value)
+    ... # No messages are left open after index closes
+    ... idx.open_messages
         
 Install from PyPI with::
 
@@ -72,4 +78,4 @@ Or manually from the sources with::
 
     python setup.py install
 
-Author: `Daniel Lee <Lee.Daniel.1986@gmail.com>`_
+Author: `Daniel Lee <Daniel.Lee@dwd.de>`_

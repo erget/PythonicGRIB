@@ -62,6 +62,8 @@ class GribMessage(object):
         gribapi.grib_release(self.gid)
         if self.grib_file:
             self.grib_file.open_messages.remove(self)
+        elif self.grib_index:
+            self.grib_index.open_messages.remove(self)
     def close(self):
         """Possibility to manually close message."""
         self.__exit__(None, None, None)
@@ -101,25 +103,31 @@ class GribMessage(object):
 
         If ``grib_file`` is not supplied, the message is cloned from
         ``GribMessage`` ``clone``. If neither is supplied, the ``GribMessage``
-        is cloned from ``sample``.
+        is cloned from ``sample``. If ``index`` is suppliea as a GribIndex, the
+        message is taken from the index.
         """
         #: Unique GRIB ID, for GRIB API interface
         self.gid = None
         #: File containing message
         self.grib_file = None
+        #: GribIndex referencing message
+        self.grib_index = None
         if grib_file:
             self.gid = gribapi.grib_new_from_file(grib_file.file_handle)
             grib_file.message += 1
             self.grib_file = grib_file
         elif clone:
-            self.gid = clone
+            self.gid = gribapi.grib_clone(clone.gid)
         elif sample:
             self.gid = gribapi.grib_new_from_samples(sample)
         elif index:
             self.gid = gribapi.grib_new_from_index(index.iid)
+            self.grib_index = index
+            index.open_messages.append(self)
         else:
             raise RuntimeError("No source was supplied "
-                               "(possibilities: grib_file, clone, sample).")
+                               "(possibilities: grib_file, clone, sample, "
+                               "index).")
         #: Size of message in bytes
         self.size = gribapi.grib_get_message_size(self.gid)
     def get_keys(self, namespace=None):
