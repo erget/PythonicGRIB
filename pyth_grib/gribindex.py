@@ -29,7 +29,7 @@ class GribIndex(object):
         ...     # Report unique values indexed by key
         ...     idx.values(key)
         ...     # Request GribMessage matching key, value
-        ...     msg = idx.select(key, value)
+        ...     msg = idx.select({key: value})
     """
     def __enter__(self):
         return self
@@ -83,7 +83,12 @@ class GribIndex(object):
     def write(self, outfile):
         """Write index to filename at ``outfile``."""
         gribapi.grib_index_write(self.iid, outfile)
-    def select(self, key, value):
-        """Return message associated with given key value pair."""
-        gribapi.grib_index_select(self.iid, key, value)
-        return GribMessage(index=self)
+    def select(self, key_value_pairs):
+        """
+        Return message associated with given key value pairs.
+
+        ``key_value_pairs`` should be passed as a dictionary.
+        """
+        for key in key_value_pairs:
+            gribapi.grib_index_select(self.iid, key, key_value_pairs[key])
+        return GribMessage(gribindex=self)

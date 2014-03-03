@@ -11,6 +11,9 @@ import collections
 
 import gribapi
 
+class IndexNotSelectedError(Exception):
+    """GRIB index was requested before selecting key/value pairs."""
+
 class GribMessage(object):
     """
     A GRIB message.
@@ -51,7 +54,7 @@ class GribMessage(object):
         ...     with open(testfile, "w") as test:
         ...         msg.write(test)
         ...     # Messages can be cloned from other messages
-        ...     msg2 = msg.clone()
+        ...     msg2 = GribMessage(clone=msg)
         ...     # If desired, messages can be closed manually or used in with
         ...     msg.close()
     """
@@ -97,7 +100,7 @@ class GribMessage(object):
         return [(key, self[key]) for key in self.keys()]
     def keys(self):
         return self.get_keys()
-    def __init__(self, grib_file=None, clone=None, sample=None, index=None):
+    def __init__(self, grib_file=None, clone=None, sample=None, gribindex=None):
         """
         Open a message and inform the GRIB file that it's been incremented.
 
@@ -120,10 +123,14 @@ class GribMessage(object):
             self.gid = gribapi.grib_clone(clone.gid)
         elif sample:
             self.gid = gribapi.grib_new_from_samples(sample)
-        elif index:
-            self.gid = gribapi.grib_new_from_index(index.iid)
-            self.grib_index = index
-            index.open_messages.append(self)
+        elif gribindex:
+            self.gid = gribapi.grib_new_from_index(gribindex.iid)
+            if not self.gid:
+                raise IndexNotSelectedError("All keys must have selected "
+                                            "values before receiving message "
+                                            "from index.")
+            self.grib_index = gribindex
+            gribindex.open_messages.append(self)
         else:
             raise RuntimeError("No source was supplied "
                                "(possibilities: grib_file, clone, sample, "
@@ -139,9 +146,6 @@ class GribMessage(object):
             keys.append(key)
         gribapi.grib_keys_iterator_delete(iterator)
         return keys
-    def clone(self):
-        """Return clone of self."""
-        return GribMessage(clone=gribapi.grib_clone(self.gid))
     def dump(self):
         """Dump message's binary content."""
         return gribapi.grib_get_message(self.gid)

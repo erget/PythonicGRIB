@@ -47,7 +47,7 @@ Treat messages as a key-value pair::
     ...     with open(testfile, "w") as test:
     ...         msg.write(test)
     ...     # Messages can be cloned from other messages
-    ...     msg2 = msg.clone()
+    ...     msg2 = GribMessage(clone=msg)
     ...     # If desired, messages can be closed manually or used in with
     ...     msg.close()
         
@@ -66,7 +66,7 @@ Let indexes worry about taking care of themselves::
     ...     # Report unique values indexed by key
     ...     idx.values(key)
     ...     # Request GribMessage matching key, value
-    ...     msg = idx.select(key, value)
+    ...     msg = idx.select({key: value})
     ... # No messages are left open after index closes
     ... idx.open_messages
         

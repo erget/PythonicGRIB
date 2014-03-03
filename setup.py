@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='PythonicGRIB',
-      version='0.1.0',
+      version='0.1.1',
       description="A Pythonic interface for the ECMWF's GRIB API",
       author='Daniel Lee',
       author_email='Lee.Daniel.1986@gmail.com',
