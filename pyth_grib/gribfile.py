@@ -33,14 +33,11 @@ class GribFile(file):
     def __exit__(self, type, value, traceback):
         """Close all open messages, release GRIB file handle and close file."""
         while self.open_messages:
-            self.open_messages[0].close()
+            self.open_messages.pop().close()
         self.file_handle.close()
     def close(self):
         """Possibility to manually close file."""
         self.__exit__(None, None, None)
-    def __iter__(self):
-        """Return iterator object to iterate over messages."""
-        return self
     def __len__(self):
         """Return total messages in GRIB file."""
         return gribapi.grib_count_in_file(self.file_handle)
@@ -54,10 +51,3 @@ class GribFile(file):
         self.message = 0
         #: Open messages
         self.open_messages = []
-    def next(self):
-        """Return next message in GRIB file."""
-        if self.message >= len(self) + 1:
-            raise StopIteration("Last message in file reached.")
-        next_message = GribMessage(self)
-        self.open_messages.append(next_message)
-        return next_message

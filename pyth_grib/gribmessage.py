@@ -63,9 +63,7 @@ class GribMessage(object):
     def __exit__(self, type, value, traceback):
         """Release GRIB message handle and inform file of release."""
         gribapi.grib_release(self.gid)
-        if self.grib_file:
-            self.grib_file.open_messages.remove(self)
-        elif self.grib_index:
+        if self.grib_index:
             self.grib_index.open_messages.remove(self)
     def close(self):
         """Possibility to manually close message."""
@@ -115,15 +113,26 @@ class GribMessage(object):
         self.grib_file = None
         #: GribIndex referencing message
         self.grib_index = None
-        if grib_file:
+        # Strangely, if I test any of the input variables in an if-clause I
+        # the GRIB API no longer increments the file, so I've enclosed the gid
+        # assignments in try blocks. I wish there were a better way of doing
+        # this.
+        try:
             self.gid = gribapi.grib_new_from_file(grib_file.file_handle)
-            grib_file.message += 1
             self.grib_file = grib_file
-        elif clone:
+            self.grib_file.message += 1
+            self.grib_file.open_messages.append(self)
+        except AttributeError:
+            pass
+        try:
             self.gid = gribapi.grib_clone(clone.gid)
-        elif sample:
+        except AttributeError:
+            pass
+        try:
             self.gid = gribapi.grib_new_from_samples(sample)
-        elif gribindex:
+        except AssertionError:
+            pass
+        try:
             self.gid = gribapi.grib_new_from_index(gribindex.iid)
             if not self.gid:
                 raise IndexNotSelectedError("All keys must have selected "
@@ -131,12 +140,14 @@ class GribMessage(object):
                                             "from index.")
             self.grib_index = gribindex
             gribindex.open_messages.append(self)
-        else:
-            raise RuntimeError("No source was supplied "
-                               "(possibilities: grib_file, clone, sample, "
-                               "index).")
-        #: Size of message in bytes
-        self.size = gribapi.grib_get_message_size(self.gid)
+        except AttributeError:
+            pass
+        if not self.gid:
+            raise RuntimeError("Either grib_file, clone, sample or gribindex "
+                               "must be provided.")
+    def size(self):
+        """Return size of message in bytes."""
+        return gribapi.grib_get_message_size(self.gid)
     def get_keys(self, namespace=None):
         """Get available keys in message."""
         iterator = gribapi.grib_keys_iterator_new(self.gid, namespace=namespace)

@@ -13,112 +13,21 @@ from pyth_grib.gribmessage import IndexNotSelectedError
 
 
 TESTGRIB = "test.grib2"
-MESSAGE_KEYS = ['parametersVersion', 'thousand', 'hundred', 'globalDomain',
-                'GRIBEditionNumber', 'grib2divider', 'missingValue',
-                'ieeeFloats', 'section0Length', 'identifier', 'discipline',
-                'editionNumber', 'totalLength', 'sectionNumber',
-                'section1Length', 'numberOfSection', 'centre',
-                'centreDescription', 'subCentre', 'tablesVersion',
-                'masterDir', 'localTablesVersion', 'localDir',
-                'significanceOfReferenceTime', 'year', 'month', 'day', 'hour',
-                'minute', 'second', 'dataDate', 'julianDay', 'dataTime',
-                'productionStatusOfProcessedData', 'typeOfProcessedData',
-                'md5Section1', 'selectStepTemplateInterval',
-                'selectStepTemplateInstant', 'stepType', 'sectionNumber',
-                'grib2LocalSectionPresent', 'section2Length',
-                'numberOfSection', 'addEmptySection2',
-                'grib2LocalSectionNumber', 'marsClass', 'marsType',
-                'marsStream', 'experimentVersionNumber', 'class', 'type',
-                'stream', 'productDefinitionTemplateNumberInternal',
-                'localDefinitionNumber', 'eps', 'oceanAtmosphereCoupling',
-                'legBaseDate', 'legBaseTime', 'legNumber', 'referenceDate',
-                'climateDateFrom', 'climateDateTo', 'addExtraLocalSection',
-                'deleteExtraLocalSection', 'extraLocalSectionPresent',
-                'section2Padding', 'sectionNumber',
-                'gridDescriptionSectionPresent', 'section3Length',
-                'numberOfSection', 'sourceOfGridDefinition',
-                'numberOfDataPoints', 'numberOfOctectsForNumberOfPoints',
-                'interpretationOfNumberOfPoints', 'PLPresent',
-                'gridDefinitionTemplateNumber', 'shapeOfTheEarth',
-                'scaleFactorOfRadiusOfSphericalEarth',
-                'scaledValueOfRadiusOfSphericalEarth',
-                'scaleFactorOfEarthMajorAxis', 'scaledValueOfEarthMajorAxis',
-                'scaleFactorOfEarthMinorAxis', 'scaledValueOfEarthMinorAxis',
-                'radius', 'Ni', 'Nj',
-                'basicAngleOfTheInitialProductionDomain', 'mBasicAngle',
-                'angleMultiplier', 'mAngleMultiplier',
-                'subdivisionsOfBasicAngle', 'angleDivisor',
-                'latitudeOfFirstGridPoint', 'longitudeOfFirstGridPoint',
-                'resolutionAndComponentFlags', 'resolutionAndComponentFlags1',
-                'resolutionAndComponentFlags2', 'iDirectionIncrementGiven',
-                'jDirectionIncrementGiven', 'uvRelativeToGrid',
-                'resolutionAndComponentFlags6',
-                'resolutionAndComponentFlags7',
-                'resolutionAndComponentFlags8', 'ijDirectionIncrementGiven',
-                'latitudeOfLastGridPoint', 'longitudeOfLastGridPoint',
-                'iDirectionIncrement', 'N', 'scanningMode',
-                'iScansNegatively', 'jScansPositively',
-                'jPointsAreConsecutive', 'alternativeRowScanning',
-                'iScansPositively', 'scanningMode5', 'scanningMode6',
-                'scanningMode7', 'scanningMode8', 'g2grid',
-                'latitudeOfFirstGridPointInDegrees',
-                'longitudeOfFirstGridPointInDegrees',
-                'latitudeOfLastGridPointInDegrees',
-                'longitudeOfLastGridPointInDegrees',
-                'iDirectionIncrementInDegrees', 'global', 'latLonValues',
-                'latitudes', 'longitudes', 'distinctLatitudes',
-                'distinctLongitudes', 'section3Padding', 'gridType',
-                'md5Section3', 'sectionNumber', 'section4Length',
-                'numberOfSection', 'NV', 'neitherPresent',
-                'productDefinitionTemplateNumber', 'Parameter information',
-                'parameterCategory', 'parameterNumber', 'parameterUnits',
-                'parameterName', 'typeOfGeneratingProcess',
-                'backgroundProcess', 'generatingProcessIdentifier',
-                'hoursAfterDataCutoff', 'minutesAfterDataCutoff',
-                'indicatorOfUnitOfTimeRange', 'stepUnits', 'forecastTime',
-                'startStep', 'endStep', 'stepRange', 'stepTypeInternal',
-                'validityDate', 'validityTime', 'typeOfFirstFixedSurface',
-                'unitsOfFirstFixedSurface', 'nameOfFirstFixedSurface',
-                'scaleFactorOfFirstFixedSurface',
-                'scaledValueOfFirstFixedSurface', 'typeOfSecondFixedSurface',
-                'unitsOfSecondFixedSurface', 'nameOfSecondFixedSurface',
-                'scaleFactorOfSecondFixedSurface',
-                'scaledValueOfSecondFixedSurface', 'pressureUnits',
-                'typeOfLevel', 'level', 'bottomLevel', 'topLevel',
-                'EPS information', 'typeOfEnsembleForecast',
-                'perturbationNumber', 'numberOfForecastsInEnsemble', 'x',
-                'paramIdECMF', 'paramId', 'shortNameECMF', 'shortName',
-                'unitsECMF', 'units', 'nameECMF', 'name', 'cfNameECMF',
-                'cfName', 'cfVarNameECMF', 'cfVarName', 'ifsParam',
-                'genVertHeightCoords', 'PVPresent', 'md5Section4',
-                'sectionNumber',
-                'grib 2 Section 5 DATA REPRESENTATION SECTION',
-                'section5Length', 'numberOfSection', 'numberOfValues',
-                'dataRepresentationTemplateNumber', 'packingType',
-                'referenceValue', 'referenceValueError', 'binaryScaleFactor',
-                'decimalScaleFactor', 'bitsPerValue',
-                'typeOfOriginalFieldValues', 'md5Section5', 'lengthOfHeaders',
-                'md5Headers', 'sectionNumber',
-                'grib 2 Section 6 BIT-MAP SECTION', 'section6Length',
-                'numberOfSection', 'bitMapIndicator', 'bitmapPresent',
-                'md5Section6', 'sectionNumber', 'grib 2 Section 7 data',
-                'section7Length', 'numberOfSection', 'codedValues', 'values',
-                'packingError', 'unpackedError', 'maximum', 'minimum',
-                'average', 'numberOfMissing', 'standardDeviation', 'skewness',
-                'kurtosis', 'isConstant', 'changeDecimalPrecision',
-                'decimalPrecision', 'setBitsPerValue', 'getNumberOfValues',
-                'scaleValuesBy', 'offsetValuesBy', 'productType',
-                'md5Section7', 'section8Length', '7777']
 TEST_OUTPUT = "test-output.grib"
 TEST_INDEX = "test.index"
-TEST_KEYS = (MESSAGE_KEYS[MESSAGE_KEYS.index("dataDate")],
-        MESSAGE_KEYS[MESSAGE_KEYS.index("stepRange")])
+TEST_KEYS = ("dataDate", "stepRange")
 TEST_VALUES = 20110225, 0
 SELECTION_DICTIONARY = {}
 for i in range(len(TEST_KEYS)):
     SELECTION_DICTIONARY[TEST_KEYS[i]] = TEST_VALUES[i]
 TEST_INDEX_OUTPUT = TESTGRIB
 TEST_STEPRANGE = ('0', '12', '18', '24', '6')
+# Flag if we're working with DWD definitions or not
+DWD = False
+GRIB_DEF_PATH = os.environ.get("GRIB_DEFINITION_PATH")
+if GRIB_DEF_PATH :
+    if "edzw" in GRIB_DEF_PATH:
+        DWD = True
 
 class TestGribFile(unittest.TestCase):
     """Test GribFile functionality."""
@@ -126,24 +35,35 @@ class TestGribFile(unittest.TestCase):
         """Messages in GribFile can be opened and closed properly."""
         with GribFile(TESTGRIB) as grib:
             self.assertEqual(len(grib), 5)
-            for msg in grib:
-                self.assertEqual(msg["shortName"], "msl")
+            for i in range(len(grib)):
+                msg = GribMessage(grib)
+                short_name = "P" if DWD else "msl"
+                self.assertEqual(msg["shortName"], short_name)
             self.assertEqual(len(grib.open_messages), 5)
         self.assertEqual(len(grib.open_messages), 0)
+    def test_iteration_works(self):
+        """The GribFile allows proper iteration over all messages."""
+        step_ranges = []
+        with GribFile(TESTGRIB) as grib:
+            for i in range(len(grib)):
+                msg = GribMessage(grib)
+                step_ranges.append(msg["stepRange"])
+        self.assertSequenceEqual(step_ranges, ["0", "6", "12", "18", "24"])
 
 class TestGribMessage(unittest.TestCase):
     """Test GribMessage functionality."""
     def test_metadata(self):
         """Metadata is read correctly from GribMessage."""
         with GribFile(TESTGRIB) as grib:
-            msg = grib.next()
-            self.assertEqual(len(msg), 243)
-            self.assertEqual(msg.size, 160219)
-            self.assertSequenceEqual(msg.keys(), MESSAGE_KEYS)
+            msg = GribMessage(grib)
+            message_length = 245 if DWD else 243
+            self.assertEqual(len(msg), message_length)
+            self.assertEqual(msg.size(), 160219)
+            self.assertEqual(len(msg.keys()), 245)
     def test_missing_message_behavior(self):
         """Missing messages are detected properly."""
         with GribFile(TESTGRIB) as grib:
-            msg = grib.next()
+            msg = GribMessage(grib)
             self.assertTrue(msg.missing("scaleFactorOfSecondFixedSurface"))
             msg["scaleFactorOfSecondFixedSurface"] = 5
             msg.set_missing("scaleFactorOfSecondFixedSurface")
@@ -152,20 +72,20 @@ class TestGribMessage(unittest.TestCase):
     def test_value_setting(self):
         """Keys can be set properly."""
         with GribFile(TESTGRIB) as grib:
-            msg = grib.next()
+            msg = GribMessage(grib)
             msg["scaleFactorOfSecondFixedSurface"] = 5
             msg["values"] = [1, 2, 3]
     def test_serialize(self):
         """Message can be serialized to file."""
         with GribFile(TESTGRIB) as grib:
-            msg = grib.next()
+            msg = GribMessage(grib)
             with open(TEST_OUTPUT, "w") as test:
                 msg.write(test)
         os.unlink(TEST_OUTPUT)
     def test_clone(self):
         """Messages can be used to produce clone Messages."""
         with GribFile(TESTGRIB) as grib:
-            msg = grib.next()
+            msg = GribMessage(grib)
             msg2 = GribMessage(clone=msg)
             self.assertSequenceEqual(msg.keys(), msg2.keys())
 
