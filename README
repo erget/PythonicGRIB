@@ -2,10 +2,14 @@
 PythonicGrib
 ============
 
-PythonicGrib is a Python wrapper for the ECMWF's GRIB API which allows
-interaction with GRIB messagese in a pythonic way and allows the user to be
-sure their code is free of memory leaks by transfering bookkeeping tasks to a
-context manager.
+PythonicGrib is a Python wrapper for the `ECMWF's GRIB API  
+<https://software.ecmwf.int/wiki/display/GRIB/Releases>`_
+********************************************************************************
+which allows interaction with GRIB messages in a pythonic way and allows the
+user to be sure their code is free of memory leaks by transfering bookkeeping
+tasks to a context manager. It provides high-level access to the procedural
+Python calls inherent to the GRIB API and requires a GRIB API installation on
+the system.
 
 Working with GRIB files in a context manager like this::
 
